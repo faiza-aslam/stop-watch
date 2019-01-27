@@ -9,6 +9,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <build>
+        <finalName>stop-watch</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
