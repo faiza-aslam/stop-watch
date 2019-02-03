@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class SimpleStopWatch implements StopWatch {
+public class TimerStopWatch implements StopWatch {
 
     private Instant startTime, endTime;
     private Duration duration; /* Duration of whole stop watch */
@@ -19,7 +19,9 @@ public class SimpleStopWatch implements StopWatch {
 
     private Boolean isRunning=false;
     private Boolean isStopped=true;
-    private Instant currentLapStartTime;
+//    private Instant currentLapStartTime;
+    private TimerThread tt = new TimerThread();
+    private Thread timerThread = new Thread(tt);
 
     @Override
     public Boolean isRunning() {
@@ -43,23 +45,25 @@ public class SimpleStopWatch implements StopWatch {
     @Override
     public void start() {
         if(isRunning) {
-            throw new IllegalStateException("SimpleStopWatch already started");
+            throw new IllegalStateException("TimerStopWatch already started");
         }
-        System.out.println("Starting SimpleStopWatch - "+new Date());
+        //System.out.println("Starting TimerStopWatch - "+new Date());
         isRunning = true;
         startTime = Instant.now();
-        currentLapStartTime = Instant.now();
+//        currentLapStartTime = Instant.now();
+        timerThread.start();
     }
 
     @Override
     public void stop() {
         if(!isRunning) {
-            throw new IllegalStateException("SimpleStopWatch is not running, cannot be stopped");
+            throw new IllegalStateException("TimerStopWatch is not running, cannot be stopped");
         }
-        System.out.println("Stopping SimpleStopWatch - "+new Date());
+//        System.out.println("Stopping TimerStopWatch - "+new Date());
         isStopped = true;
         isRunning = false;
         endTime = Instant.now();
+        tt.stop();
         Duration diff = Duration.between(startTime, endTime);
         this.setDuration(diff);
     }
@@ -67,23 +71,24 @@ public class SimpleStopWatch implements StopWatch {
     @Override
     public void lap() {
         if(!isRunning) {
-            throw new IllegalStateException("SimpleStopWatch is not running");
+            throw new IllegalStateException("TimerStopWatch is not running");
         }
 
         Integer lapNo = lapsList.size()+1;
-        System.out.println("Lapping SimpleStopWatch "+lapNo+" - " + new Date());
-        LapDto lap = new LapDto(lapNo, currentLapStartTime, Instant.now());
-        System.out.println(lap.toString());
+//        System.out.println("Lapping SimpleStopWatch "+lapNo+" - " + new Date());
+        LapDto lap = new LapDto(lapNo, Duration.ofSeconds(tt.getTotalSeconds()));
+        tt.reset();
+//        System.out.println(lap.toString());
         lapsList.add(lap);
-        this.currentLapStartTime = Instant.now();
+//        this.currentLapStartTime = Instant.now();
     }
 
     @Override
     public void reset() {
         if(!isStopped) {
-            throw new IllegalStateException("SimpleStopWatch is not stopped - cannot be reset");
+            throw new IllegalStateException("TimerStopWatch is not stopped - cannot be reset");
         }
-        System.out.println("Resetting SimpleStopWatch - "+new Date());
+//        System.out.println("Resetting TimerStopWatch - "+new Date());
         lapsList = new ArrayList<>();
         isRunning = null;
         isStopped = null;
@@ -101,7 +106,7 @@ public class SimpleStopWatch implements StopWatch {
         sb.append('\n');
         if(this.lapsList.size() > 0) {
             sb.append("-----------------------------------------\n");
-            sb.append("s       %       Lap No.\n");
+            sb.append("s       %        Lap No.\n");
             sb.append("-----------------------------------------\n");
             NumberFormat nf = NumberFormat.getNumberInstance();
             nf.setMinimumIntegerDigits(5);
@@ -119,4 +124,5 @@ public class SimpleStopWatch implements StopWatch {
 
         return sb.toString();
     }
+
 }

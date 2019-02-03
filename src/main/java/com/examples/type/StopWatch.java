@@ -6,15 +6,15 @@ public interface StopWatch {
 
     void stop();
 
-    void resume();
+    //void resume();
 
     void lap();
 
     void reset();
 
-    Boolean getRunning();
+    Boolean isRunning();
 
-    Boolean getStopped();
+    Boolean isStopped();
 
     /**
      * Returns No. of seconds elapsed
