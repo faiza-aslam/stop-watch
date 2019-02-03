@@ -76,7 +76,7 @@ public class TimerStopWatch implements StopWatch {
 
         Integer lapNo = lapsList.size()+1;
 //        System.out.println("Lapping SimpleStopWatch "+lapNo+" - " + new Date());
-        LapDto lap = new LapDto(lapNo, Duration.ofSeconds(tt.getTotalSeconds()));
+        LapDto lap = new LapDto(lapNo, Duration.ofMillis(tt.getTotalMilliSeconds()));
         tt.reset();
 //        System.out.println(lap.toString());
         lapsList.add(lap);

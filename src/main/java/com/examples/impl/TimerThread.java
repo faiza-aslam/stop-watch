@@ -3,8 +3,8 @@ package com.examples.impl;
 public class TimerThread implements Runnable {
 
     private /*volatile*/ boolean stopTimer = false;
-    private int hours, minutes, seconds = 0;
-    private int totalSeconds = 0;
+    private int hours, minutes, seconds, milliseconds = 0;
+    private int totalMilliSeconds = 0;
 
     @Override
     public void run() {
@@ -12,9 +12,9 @@ public class TimerThread implements Runnable {
             while (!stopTimer) {
                 count();
                 String time = formatTime();
-                System.out.print("\b\b\b\b\b\b\b\b");
+                System.out.print("\b\b\b\b\b\b\b\b\b\b\b\b");
                 System.out.print(time);
-                Thread.sleep(1000);
+                Thread.sleep(1);
             }
         } catch (InterruptedException e) {
             System.out.println("Interrupting thread: "+Thread.currentThread().getName());
@@ -23,31 +23,39 @@ public class TimerThread implements Runnable {
         }
     }
 
-    public int getTotalSeconds() {
-        return totalSeconds;
+    public int getTotalMilliSeconds() {
+        return totalMilliSeconds;
     }
 
     private String formatTime() {
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        return String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds);
     }
 
     private void count() {
-        seconds++;
-        totalSeconds++;
+        milliseconds++;
+        totalMilliSeconds++;
+
+        if(milliseconds >= 1000) {
+            seconds++;
+            milliseconds=0;
+        }
 
         if(seconds >= 60) {
             minutes++;
             seconds=0;
+            milliseconds=0;
         }
         if(minutes >= 60) {
             hours++;
             minutes=0;
             seconds=0;
+            milliseconds=0;
         }
         if (hours >= 24) {
-            seconds=0;
-            minutes=0;
             hours=0;
+            minutes=0;
+            seconds=0;
+            milliseconds=0;
         }
 
     }
@@ -61,7 +69,8 @@ public class TimerThread implements Runnable {
         hours = 0;
         minutes = 0;
         seconds = 0;
-        totalSeconds = 0;
+        milliseconds = 0;
+        totalMilliSeconds = 0;
 //        System.out.println("Resetting Timer: " + this.hours + ":"+this.minutes+":"+this.seconds);
     }
 
