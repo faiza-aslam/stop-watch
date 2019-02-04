@@ -1,7 +1,6 @@
 package com.examples.test;
 
 import com.examples.impl.TimerStopWatch;
-import com.examples.impl.TimerThread;
 import com.examples.type.StopWatch;
 
 import java.util.NoSuchElementException;
@@ -12,55 +11,41 @@ public class ConsoleTimerStopWatchTest {
     public static void main(String[] args) {
 
         System.out.println(" *** StopWatch *** ");
+        System.out.println("Press 'Enter' to lap, 'Ctrl+C' to stop ... ");
         StopWatch sw = new TimerStopWatch();
         registerHook(sw);
 
-        System.out.println("Enter 'a' to start stop watch");
+        sw.start();
+//        System.out.println("Stop Watch started -----");
+
         try (Scanner scanner = new Scanner(System.in)) {
-            String startWatch = scanner.nextLine();
-            while (!startWatch.equalsIgnoreCase("a")) {
-                startWatch = scanner.nextLine();
-            }
+            String input;
 
-            sw.start();
-            System.out.println("Stop Watch started -----");
+            do {
+                input = scanner.nextLine();
+                switch (input.trim()) {
+                    case "":
+                        sw.lap();
+                        break;
 
-            try {
-                String input;
-                System.out.println("Press 'l' to lap, 's' to stop ... ");
-                do {
-                    input = scanner.nextLine();
-                    switch (input.toLowerCase()) {
-                        case "l":
-                            sw.lap();
-                            break;
+                    /*case "s":
+                        sw.stop();
+                        break;*/
 
-                        case "s":
-                            sw.stop();
-                            break;
-
-                        default:
+                    default:
 //                            System.out.println("Invalid input. Please type again...");
-                            break;
-                    }
+                        break;
+                }
 
-                } while (!"s".equalsIgnoreCase(input));
+            } while (!"s".equalsIgnoreCase(input));
 
-
-            } catch (NoSuchElementException ex) {
-
-            } finally {
-                scanner.close();
-            }
         } catch (NoSuchElementException ex) {
-
         }
-
     }
 
     private static void registerHook(StopWatch sw) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Shutdown Hook is running !");
+//            System.out.println("Shutdown Hook is running !");
             if (sw != null) {
                 if (!sw.isStopped()) {
                     sw.stop();

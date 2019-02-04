@@ -14,7 +14,7 @@ public class TimerThread implements Runnable {
                 String time = formatTime();
                 System.out.print("\b\b\b\b\b\b\b\b\b\b\b\b");
                 System.out.print(time);
-                Thread.sleep(1);
+                Thread.sleep(100);
             }
         } catch (InterruptedException e) {
             System.out.println("Interrupting thread: "+Thread.currentThread().getName());
@@ -32,8 +32,8 @@ public class TimerThread implements Runnable {
     }
 
     private void count() {
-        milliseconds++;
-        totalMilliSeconds++;
+        milliseconds+=100;
+        totalMilliSeconds+=100;
 
         if(milliseconds >= 1000) {
             seconds++;
